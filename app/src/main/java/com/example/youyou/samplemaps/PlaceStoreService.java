@@ -1,5 +1,6 @@
 package com.example.youyou.samplemaps;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.content.Intent;
 import android.location.Location;
@@ -34,8 +35,17 @@ public class PlaceStoreService extends IntentService{
 
         if(LocationResult.hasResult(intent)){
             LocationResult locationResult = LocationResult.extractResult(intent);
-            List<Location> locations = locationResult.getLocations();
+            Location location = locationResult.getLastLocation();
+            ((SampleMapApplication)getApplication()).setPresentLocation(location);
+            sendMessage(getResources().getInteger(R.integer.message_get_location));
         }
+    }
+
+    protected void sendMessage(int message){
+        Intent broadcast = new Intent();
+        broadcast.putExtra("message", message);
+        broadcast.setAction("GET_LOCATION");
+        getBaseContext().sendBroadcast(broadcast);
     }
 
 }

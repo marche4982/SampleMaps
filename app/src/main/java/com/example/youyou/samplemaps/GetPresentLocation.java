@@ -56,11 +56,15 @@ public class GetPresentLocation {
     // →　それを使って、現在地と最寄り駅を調べる
     // →　最寄り駅のルートを探る
 
+    GetPresentLocation(Activity activity){
+        mActivity = activity;
+        this.checkServicesAvaliability();
+    }
 
     // これをつかって、現在位置の取得、最寄り駅のサーチ、そこまでのルート検索をする
 
     // Google Play サービスが利用可能か調べる
-    private void checkServicesAvaliable(){
+    private void checkServicesAvaliability(){
         if( mGoogleApiClient != null && mGoogleApiClient.isConnected() ){
             return ;
         }
@@ -124,7 +128,6 @@ public class GetPresentLocation {
                 .setMaxWaitTime(MAX_WAIT_TIME_MS)
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-
         // この位置情報は可能かのリクエスト
         LocationSettingsRequest checkRequest = new LocationSettingsRequest.Builder()
                 .addLocationRequest(mLocationRequest)
@@ -181,12 +184,11 @@ public class GetPresentLocation {
                     mGoogleApiClient,
                     mLocationRequest,
                     getLocationPendingIntent(PendingIntent.FLAG_UPDATE_CURRENT));
-
         }
     }
 
     private PendingIntent getLocationPendingIntent(int flag){
-        Intent intent = new Intent(mActivity, GetPresentLocation.class);
+        Intent intent = new Intent(mActivity, PlaceStoreService.class);
         return PendingIntent.getService(mActivity, PENDING_INTENT_LOCATION, intent, flag);
     }
 
